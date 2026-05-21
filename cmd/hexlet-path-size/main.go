@@ -1,7 +1,19 @@
 package main
 
-import "fmt"
+import (
+	"os"
+	"context"
+	"github.com/urfave/cli/v3"
+)
 
 func main() {
-	fmt.Println("Hello, Hexlet!")
+	cmd := &cli.Command{
+		Name:		"hexlet-path-size",
+		Usage:		"print size of a file or directory",
+		ArgsUsage:	"<path>",
+	}
+
+	os.Args = []string{"hexlet-path-size"}
+
+	_ = cmd.Run(context.Background(), os.Args)
 }
