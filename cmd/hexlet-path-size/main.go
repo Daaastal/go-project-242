@@ -17,22 +17,31 @@ func main() {
 		ArgsUsage:	"<path>",
 		Flags: []cli.Flag{
 			&cli.BoolFlag{
-				Name:	 "human",
-				Aliases: []string{"H"},
-				Usage:	 "human-readable sizes (auto-select unit)",
+				Name:		"human",
+				Aliases:	[]string{"H"},
+				DefaultText:	"false",
+				Usage:		"human-readable sizes (auto-select unit)",
 			},
 			&cli.BoolFlag{
-				Name:	 "all",
-				Aliases: []string{"a"},
-				Usage:	 "include hidden files and directories",
+				Name:		"all",
+				Aliases:	[]string{"a"},
+				DefaultText:	"false",
+				Usage:		"include hidden files and directories",
+			},
+			&cli.BoolFlag{
+				Name:		"recursive",
+				Aliases:	[]string{"r"},
+				DefaultText:	"false",
+				Usage:		"recursive size of directories",
 			},
 		},
 		Action: func(_ context.Context, cmd *cli.Command) error {
 			path := cmd.Args().Get(0)
 			human := cmd.Bool("human")
 			all := cmd.Bool("all")
+			recursive := cmd.Bool("recursive")
 
-			size, err := GetPathSize(path, false, human, all)
+			size, err := GetPathSize(path, recursive, human, all)
 			if err != nil {
 				log.Fatal(err)
 			}
@@ -91,34 +100,18 @@ func GetPathSize(path string, recursive, human, all bool) (string, error) {
 }
 
 func convertHumanFormat(size int64) (string, error) {
-	newSize := int64(0)
-	remains := int64(0)
-	count := 0
+	units := []string{"B", "KB", "MB", "GB", "TB", "PB", "EB"}
+	value := float64(size)
+	i := 0
 
-	if size < 1024 {
-		return fmt.Sprintf("%dB", size), nil
+	for value >= 1024 && i < len(units)-1 {
+		value /= 1024
+		i++
 	}
 
-	for size != 0 {
-		newSize = size
-		remains = size % 1024
-		size /= 1024
-		count++;
+	if i == 0 {
+		return fmt.Sprintf("%d%s", size, units[i]), nil
 	}
 
-	switch count {
-	case 1:
-		return fmt.Sprintf("%d.%dKB", newSize, remains), nil
-	case 2:
-		return fmt.Sprintf("%d.%dMB", newSize, remains), nil
-	case 3:
-		return fmt.Sprintf("%d.%dGB", newSize, remains), nil
-	case 4:
-		return fmt.Sprintf("%d.%dTB", newSize, remains), nil
-	case 5:
-		return fmt.Sprintf("%d.%dPB", newSize, remains), nil
-	case 6:
-		return fmt.Sprintf("%d.%dEB", newSize, remains), nil
-	}
-	return fmt.Sprintf("%dB", size), nil
+	return fmt.Sprintf("%.1f%s", value, units[i]), nil
 }
