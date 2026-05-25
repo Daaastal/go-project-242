@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"context"
+	"strings"
 	"path/filepath"
 	"github.com/urfave/cli/v3"
 )
@@ -20,12 +21,18 @@ func main() {
 				Aliases: []string{"H"},
 				Usage:	 "human-readable sizes (auto-select unit)",
 			},
+			&cli.BoolFlag{
+				Name:	 "all",
+				Aliases: []string{"a"},
+				Usage:	 "include hidden files and directories",
+			},
 		},
 		Action: func(_ context.Context, cmd *cli.Command) error {
 			path := cmd.Args().Get(0)
 			human := cmd.Bool("human")
+			all := cmd.Bool("all")
 
-			size, err := GetPathSize(path, false, human, false)
+			size, err := GetPathSize(path, false, human, all)
 			if err != nil {
 				log.Fatal(err)
 			}
@@ -38,25 +45,37 @@ func main() {
 	_ = cmd.Run(context.Background(), os.Args)
 }
 
+func isHidden(name string) bool {
+	return strings.HasPrefix(name, ".")
+}
+
 func GetPathSize(path string, recursive, human, all bool) (string, error) {
 	size := int64(0)
 
 	fi, err := os.Lstat(path)
 	if err != nil {
-		log.Fatal(err)
+		return "", err
+	}
+
+	if isHidden(fi.Name()) && !all {
+		return "", nil
 	}
 
 	mode := fi.Mode()
 	if mode.IsDir() {
 		files, err := os.ReadDir(path)
 		if err != nil {
-			log.Fatal(err)
+			return "", err
 		}
 
 		for _, file := range files {
+			if isHidden(file.Name()) && !all {
+				continue
+			}
+
 			fi, err := os.Lstat(filepath.Join(path, file.Name()))
 			if err != nil {
-				log.Fatal(err)
+				return "", err
 			}
 			size += fi.Size()
 		}
