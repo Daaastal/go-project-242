@@ -3,7 +3,6 @@ package main
 import (
 	"os"
 	"fmt"
-	"log"
 	"context"
 	"strings"
 	"path/filepath"
@@ -43,7 +42,7 @@ func main() {
 
 			size, err := GetPathSize(path, recursive, human, all)
 			if err != nil {
-				log.Fatal(err)
+				return err
 			}
 
 			fmt.Printf("%s\t%s", size, path)
@@ -56,47 +55,6 @@ func main() {
 
 func isHidden(name string) bool {
 	return strings.HasPrefix(name, ".")
-}
-
-func GetPathSize(path string, recursive, human, all bool) (string, error) {
-	size := int64(0)
-
-	fi, err := os.Lstat(path)
-	if err != nil {
-		return "", err
-	}
-
-	if isHidden(fi.Name()) && !all {
-		return "", nil
-	}
-
-	mode := fi.Mode()
-	if mode.IsDir() {
-		files, err := os.ReadDir(path)
-		if err != nil {
-			return "", err
-		}
-
-		for _, file := range files {
-			if isHidden(file.Name()) && !all {
-				continue
-			}
-
-			fi, err := os.Lstat(filepath.Join(path, file.Name()))
-			if err != nil {
-				return "", err
-			}
-			size += fi.Size()
-		}
-	} else {
-		size += fi.Size()
-	}
-
-	if human {
-		return convertHumanFormat(size)
-	}
-
-	return fmt.Sprintf("%dB", size), nil
 }
 
 func convertHumanFormat(size int64) (string, error) {
@@ -114,4 +72,65 @@ func convertHumanFormat(size int64) (string, error) {
 	}
 
 	return fmt.Sprintf("%.1f%s", value, units[i]), nil
+}
+
+func pathSize(path string, recursive, all bool) (int64, error) {
+	fi, err := os.Lstat(path)
+	if err != nil {
+		return 0, err
+	}
+
+	if isHidden(fi.Name()) && !all {
+		return 0, nil
+	}
+
+	if !fi.IsDir() {
+		return fi.Size(), nil
+	}
+
+	entries, err := os.ReadDir(path)
+	if err != nil {
+		return 0, err
+	}
+
+	var size int64
+	for _, entry := range entries {
+		if isHidden(entry.Name()) && !all {
+			continue
+		}
+
+		entryPath := filepath.Join(path, entry.Name())
+		entryInfo, err := os.Lstat(entryPath)
+		if err != nil {
+			return 0, err
+		}
+
+		if entryInfo.IsDir() {
+			if recursive {
+				subSize, err := pathSize(entryPath, recursive, all)
+				if err != nil {
+					return 0, err
+				}
+				size += subSize
+			}
+			continue
+		}
+
+		size += entryInfo.Size()
+	}
+
+	return size, nil
+}
+
+func GetPathSize(path string, recursive, human, all bool) (string, error) {
+	size, err := pathSize(path, recursive, all)
+	if err != nil {
+		return "", err
+	}
+
+	if human {
+		return convertHumanFormat(size)
+	}
+
+	return fmt.Sprintf("%dB", size), nil
 }
