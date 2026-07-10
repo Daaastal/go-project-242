@@ -52,16 +52,17 @@ func pathSize(path string, recursive, all bool) (int64, error) {
 		if isHidden(entry.Name()) && !all {
 			continue
 		}
-
 		entryPath := filepath.Join(path, entry.Name())
-		entryInfo, err := os.Lstat(entryPath)
+		var entryInfo os.FileInfo
+		entryInfo, err = os.Lstat(entryPath)
 		if err != nil {
 			return 0, err
 		}
 
 		if entryInfo.IsDir() {
 			if recursive {
-				subSize, err := pathSize(entryPath, recursive, all)
+				var subSize int64
+				subSize, err = pathSize(entryPath, recursive, all)
 				if err != nil {
 					return 0, err
 				}
