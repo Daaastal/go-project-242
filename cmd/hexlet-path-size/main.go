@@ -1,37 +1,38 @@
 package main
 
 import (
-	"os"
-	"fmt"
 	"context"
-	"code"
+	"fmt"
 	"log"
+	"os"
+
+	"code"
 	"github.com/urfave/cli/v3"
 )
 
 func main() {
 	cmd := &cli.Command{
-		Name:		"hexlet-path-size",
-		Usage:		"print size of a file or directory",
-		ArgsUsage:	"<path>",
+		Name:      "hexlet-path-size",
+		Usage:     "print size of a file or directory",
+		ArgsUsage: "<path>",
 		Flags: []cli.Flag{
 			&cli.BoolFlag{
-				Name:		"human",
-				Aliases:	[]string{"H"},
-				DefaultText:	"false",
-				Usage:		"human-readable sizes (auto-select unit)",
+				Name:        "human",
+				Aliases:     []string{"H"},
+				DefaultText: "false",
+				Usage:       "human-readable sizes (auto-select unit)",
 			},
 			&cli.BoolFlag{
-				Name:		"all",
-				Aliases:	[]string{"a"},
-				DefaultText:	"false",
-				Usage:		"include hidden files and directories",
+				Name:        "all",
+				Aliases:     []string{"a"},
+				DefaultText: "false",
+				Usage:       "include hidden files and directories",
 			},
 			&cli.BoolFlag{
-				Name:		"recursive",
-				Aliases:	[]string{"r"},
-				DefaultText:	"false",
-				Usage:		"recursive size of directories",
+				Name:        "recursive",
+				Aliases:     []string{"r"},
+				DefaultText: "false",
+				Usage:       "recursive size of directories",
 			},
 		},
 		Action: func(_ context.Context, cmd *cli.Command) error {
