@@ -1,10 +1,10 @@
 package code
 
 import (
-	"os"
 	"fmt"
-	"strings"
+	"os"
 	"path/filepath"
+	"strings"
 )
 
 func isHidden(name string) bool {
