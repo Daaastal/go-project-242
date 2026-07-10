@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"context"
 	"code"
+	"log"
 	"github.com/urfave/cli/v3"
 )
 
@@ -34,6 +35,10 @@ func main() {
 			},
 		},
 		Action: func(_ context.Context, cmd *cli.Command) error {
+			if length := cmd.Args().Len(); length > 1 {
+				log.Fatal("Too much arguments")
+			}
+
 			path := cmd.Args().Get(0)
 			human := cmd.Bool("human")
 			all := cmd.Bool("all")
@@ -49,5 +54,7 @@ func main() {
 		},
 	}
 
-	_ = cmd.Run(context.Background(), os.Args)
+	if err := cmd.Run(context.Background(), os.Args); err != nil {
+		log.Fatal(err)
+	}
 }
