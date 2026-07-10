@@ -5,81 +5,76 @@ import (
 
 	"github.com/stretchr/testify/assert"
 )
+
 func TestGetPathSize(t *testing.T) {
 	tests := []struct {
-		name		string
-		path		string
-		recursive	bool
-		human		bool
-		all		bool
-		expect_size	string
-		expect_err	error
+		expectErr  error
+		expectSize string
+		name       string
+		path       string
+		recursive  bool
+		human      bool
+		all        bool
 	}{
 		{
+			nil, "0B",
 			"empty file",
 			"testdata/empty_file.txt",
 			false, false, false,
-			"0B", nil,
 		},
 		{
+			nil, "7B",
 			"ordinary file",
 			"testdata/hello_file.txt",
 			false, false, false,
-			"7B", nil,
 		},
 		{
+			nil, "0B",
 			"empty dir",
 			"testdata/empty_dir",
 			false, false, false,
-			"0B", nil,
 		},
 		{
+			nil, "20B",
 			"dir without recursive",
 			"testdata/dir",
 			false, false, false,
-			"20B", nil,
 		},
 		{
+			nil, "503B",
 			"dir with recursive",
 			"testdata/dir",
 			true, false, false,
-			"503B", nil,
 		},
 		{
+			nil, "89982B",
 			"big file without human flag",
 			"testdata/big_file.txt",
 			false, false, false,
-			"89982B", nil,
 		},
 		{
-			"big file witht human flag",
+			nil, "87.9KB",
+			"big file with human flag",
 			"testdata/big_file.txt",
 			false, true, false,
-			"87.9KB", nil,
 		},
 		{
-			"big file witht human flag",
-			"testdata/big_file.txt",
-			false, true, false,
-			"87.9KB", nil,
-		},
-		{
+			nil, "14B",
 			"symlink",
 			"testdata/sym_hello_file",
 			false, false, false,
-			"14B", nil,
 		},
 	}
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			got, err := GetPathSize(test.path,
-						test.recursive,
-						test.human,
-						test.all)
+				test.recursive,
+				test.human,
+				test.all)
 
-			assert.Equal(t, test.expect_size, got)
-			assert.Equal(t, test.expect_err, err)
+			assert.Equal(t, test.expectSize, got)
+			assert.Equal(t, test.expectErr, err)
 		})
 	}
 }
