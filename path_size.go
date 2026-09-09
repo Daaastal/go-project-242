@@ -7,11 +7,7 @@ import (
 	"strings"
 )
 
-func isHidden(name string) bool {
-	return strings.HasPrefix(name, ".")
-}
-
-func formatSize(size int64, human bool) (string) {
+func formatSize(size int64, human bool) string {
 	units := []string{"B", "KB", "MB", "GB", "TB", "PB", "EB"}
 	value := float64(size)
 	i := 0
@@ -20,7 +16,7 @@ func formatSize(size int64, human bool) (string) {
 		return fmt.Sprintf("%dB", size)
 	}
 
-	for value >= 1024 && i < len(units) - 1 {
+	for value >= 1024 && i < len(units)-1 {
 		value /= 1024
 		i++
 	}
@@ -29,19 +25,25 @@ func formatSize(size int64, human bool) (string) {
 }
 
 func pathSize(path string, recursive, all bool) (int64, error) {
-	fi, err := os.Lstat(path)
+	info, err := os.Lstat(path)
 	if err != nil {
 		return 0, err
 	}
 
-	if isHidden(fi.Name()) && !all {
-		return 0, nil
+	mode := info.Mode()
+
+	if mode.IsDir() {
+		return dirSize(path, recursive, all)
 	}
 
-	if !fi.IsDir() {
-		return fi.Size(), nil
+	if mode.IsRegular() || (mode&os.ModeType == os.ModeSymlink) {
+		return info.Size(), nil
 	}
 
+	return 0, nil
+}
+
+func dirSize(path string, recursive, all bool) (int64, error) {
 	entries, err := os.ReadDir(path)
 	if err != nil {
 		return 0, err
@@ -49,34 +51,24 @@ func pathSize(path string, recursive, all bool) (int64, error) {
 
 	var size int64
 	for _, entry := range entries {
-		if isHidden(entry.Name()) && !all {
+		name := entry.Name()
+
+		if !all && strings.HasPrefix(name, ".") {
 			continue
 		}
-		entryPath := filepath.Join(path, entry.Name())
-		var entryInfo os.FileInfo
-		entryInfo, err = os.Lstat(entryPath)
+
+		if !recursive && entry.IsDir() {
+			continue
+		}
+
+		subSize, err := pathSize(filepath.Join(path, name), recursive, all)
 		if err != nil {
 			return 0, err
 		}
-
-		if entryInfo.IsDir() {
-			if recursive {
-				var subSize int64
-				subSize, err = pathSize(entryPath, recursive, all)
-				if err != nil {
-					return 0, err
-				}
-				size += subSize
-			}
-			continue
-		}
-
-		size += entryInfo.Size()
+		size += subSize
 	}
-
 	return size, nil
 }
-
 func GetPathSize(path string, recursive, human, all bool) (string, error) {
 	size, err := pathSize(path, recursive, all)
 	if err != nil {
