@@ -11,21 +11,21 @@ func isHidden(name string) bool {
 	return strings.HasPrefix(name, ".")
 }
 
-func convertHumanFormat(size int64) (string, error) {
+func formatSize(size int64, human bool) (string) {
 	units := []string{"B", "KB", "MB", "GB", "TB", "PB", "EB"}
 	value := float64(size)
 	i := 0
 
-	for value >= 1024 && i < len(units)-1 {
+	if !human {
+		return fmt.Sprintf("%dB", size)
+	}
+
+	for value >= 1024 && i < len(units) - 1 {
 		value /= 1024
 		i++
 	}
 
-	if i == 0 {
-		return fmt.Sprintf("%d%s", size, units[i]), nil
-	}
-
-	return fmt.Sprintf("%.1f%s", value, units[i]), nil
+	return fmt.Sprintf("%.1f%s", value, units[i])
 }
 
 func pathSize(path string, recursive, all bool) (int64, error) {
@@ -83,9 +83,5 @@ func GetPathSize(path string, recursive, human, all bool) (string, error) {
 		return "", err
 	}
 
-	if human {
-		return convertHumanFormat(size)
-	}
-
-	return fmt.Sprintf("%dB", size), nil
+	return formatSize(size, human), nil
 }
