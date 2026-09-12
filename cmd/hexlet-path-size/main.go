@@ -2,14 +2,16 @@ package main
 
 import (
 	"context"
+	"errors"
 	"fmt"
-	"log"
 	"os"
 
 	"code"
 
 	"github.com/urfave/cli/v3"
 )
+
+var errUsage = errors.New("usage: hexlet-path-size [flags] <path>")
 
 func main() {
 	cmd := &cli.Command{
@@ -36,12 +38,13 @@ func main() {
 				Usage:       "recursive size of directories",
 			},
 		},
+
 		Action: func(_ context.Context, cmd *cli.Command) error {
-			if length := cmd.Args().Len(); length > 1 {
-				log.Fatal("Too much arguments")
+			if cmd.Args().Len() != 1 {
+				return errUsage
 			}
 
-			path := cmd.Args().Get(0)
+			path := cmd.Args().First()
 			human := cmd.Bool("human")
 			all := cmd.Bool("all")
 			recursive := cmd.Bool("recursive")
@@ -51,12 +54,19 @@ func main() {
 				return err
 			}
 
-			fmt.Printf("%s\t%s\n", size, path)
+			fmt.Fprintf(os.Stdout, "%s\t%s\n", size, path)
 			return nil
 		},
 	}
 
 	if err := cmd.Run(context.Background(), os.Args); err != nil {
-		log.Fatal(err)
+		switch {
+		case errors.Is(err, errUsage):
+			fmt.Fprintln(os.Stderr, err)
+			os.Exit(2)
+		default:
+			fmt.Fprintln(os.Stderr, err)
+			os.Exit(1)
+		}
 	}
 }
