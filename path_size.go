@@ -27,7 +27,7 @@ func formatSize(size int64, human bool) string {
 func pathSize(path string, recursive, all bool) (int64, error) {
 	info, err := os.Lstat(path)
 	if err != nil {
-		return 0, err
+		return 0, fmt.Errorf("lstat %q: %w", info, err)
 	}
 
 	mode := info.Mode()
@@ -46,7 +46,7 @@ func pathSize(path string, recursive, all bool) (int64, error) {
 func dirSize(path string, recursive, all bool) (int64, error) {
 	entries, err := os.ReadDir(path)
 	if err != nil {
-		return 0, err
+		return 0, fmt.Errorf("read dir %q: %w", path, err)
 	}
 
 	var size int64
@@ -69,6 +69,7 @@ func dirSize(path string, recursive, all bool) (int64, error) {
 	}
 	return size, nil
 }
+
 func GetPathSize(path string, recursive, human, all bool) (string, error) {
 	size, err := pathSize(path, recursive, all)
 	if err != nil {
