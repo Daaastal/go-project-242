@@ -27,7 +27,7 @@ func formatSize(size int64, human bool) string {
 func pathSize(path string, recursive, all bool) (int64, error) {
 	info, err := os.Lstat(path)
 	if err != nil {
-		return 0, fmt.Errorf("lstat %q: %w", info, err)
+		return 0, fmt.Errorf("lstat %q: %w", path, err)
 	}
 
 	mode := info.Mode()
