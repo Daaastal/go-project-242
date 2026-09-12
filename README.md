@@ -32,3 +32,63 @@ GLOBAL OPTIONS:
    --help, -h       show help
 ```
 
+Обычный запуск — размер одного файла:
+
+```console
+$ ./bin/hexlet-path-size hello_file.txt
+7B      hello_file.txt
+```
+
+Размер каталога без рекурсии:
+
+```console
+$ ./bin/hexlet-path-size dir
+20B     dir
+```
+
+С рекурсией, обход вложенных каталогов:
+
+```console
+$ ./bin/hexlet-path-size -r dir
+503B    dir
+```
+
+С флагом `-a` - учитывает скрытые файлы и каталоги внутри:
+
+```console
+$ ./bin/hexlet-path-size -r -a .
+```
+
+Человекочитаемый вывод:
+
+```console
+$ ./bin/hexlet-path-size -H big_file.txt
+87.9KB  big_file.txt
+```
+
+Скрытый файл, переданный как корневой путь, измеряется всегда:
+
+```console
+$ ./bin/hexlet-path-size .hidden
+6B      .hidden
+```
+
+## Поведение ошибок
+
+Пустой запуск и лишний аргумент дают одинаковое сообщение и код выхода 2:
+
+```console
+$ ./bin/hexlet-path-size
+usage: hexlet-path-size [flags] <path>
+$ echo $?
+2
+```
+
+Несуществующий путь даёт код 1 и сообщение об ошибке файловой системы:
+
+```console
+$ ./bin/hexlet-path-size no-such-file
+lstat "no-such-file": no such file or directory
+$ echo $?
+1
+```
