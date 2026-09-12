@@ -21,6 +21,10 @@ func formatSize(size int64, human bool) string {
 		i++
 	}
 
+	if i == 0 {
+		return fmt.Sprintf("%dB", size)
+	}
+
 	return fmt.Sprintf("%.1f%s", value, units[i])
 }
 
