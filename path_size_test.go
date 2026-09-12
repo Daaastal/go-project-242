@@ -1,9 +1,12 @@
 package code
 
 import (
+	"os"
+	"path/filepath"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestGetPathSize(t *testing.T) {
@@ -77,4 +80,68 @@ func TestGetPathSize(t *testing.T) {
 			assert.Equal(t, test.expectErr, err)
 		})
 	}
+}
+
+func TestGetPathSizeErrors(t *testing.T) {
+	tests := []struct {
+		name string
+		path string
+	}{
+		{"empty path", ""},
+		{"nonexistent path", "testdata/does_not_exist"},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			got, err := GetPathSize(test.path, false, false, false)
+
+			require.Error(t, err)
+			assert.Equal(t, "", got)
+		})
+	}
+}
+
+func TestHiddenRootIsMeasured(t *testing.T) {
+	dir := t.TempDir()
+	hidden := filepath.Join(dir, ".hidden")
+
+	require.NoError(t, os.WriteFile(hidden, []byte("secret"), 0o644))
+
+	size, err := GetPathSize(hidden, false, false, false)
+	require.NoError(t, err)
+	assert.Equal(t, "6B", size)
+}
+
+func TestHiddenChildren(t *testing.T) {
+	dir := t.TempDir()
+
+	require.NoError(t, os.WriteFile(filepath.Join(dir, "visible"), []byte("abc"), 0o644))
+	require.NoError(t, os.WriteFile(filepath.Join(dir, ".hidden"), []byte("secret"), 0o644))
+
+	size, err := GetPathSize(dir, false, false, false)
+	require.NoError(t, err)
+	assert.Equal(t, "3B", size)
+
+	sizeAll, err := GetPathSize(dir, false, false, true)
+	require.NoError(t, err)
+	assert.Equal(t, "9B", sizeAll)
+}
+
+func TestDotAsRoot(t *testing.T) {
+	dir := t.TempDir()
+	require.NoError(t, os.WriteFile(filepath.Join(dir, "visible"), []byte("abc"), 0o644))
+	require.NoError(t, os.WriteFile(filepath.Join(dir, ".hidden"), []byte("secret"), 0o644))
+
+	oldwd, err := os.Getwd()
+	require.NoError(t, err)
+
+	defer func() {
+		require.NoError(t, os.Chdir(oldwd))
+	}()
+
+	require.NoError(t, os.Chdir(dir))
+
+	size, err := GetPathSize(".", false, false, false)
+	require.NoError(t, err)
+	assert.Equal(t, "3B", size)
 }
