@@ -54,7 +54,9 @@ func main() {
 				return err
 			}
 
-			fmt.Fprintf(os.Stdout, "%s\t%s\n", size, path)
+			if _, errPrint := fmt.Fprintf(os.Stdout, "%s\t%s\n", size, path); errPrint != nil {
+				return errPrint
+			}
 			return nil
 		},
 	}

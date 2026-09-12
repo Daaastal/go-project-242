@@ -61,9 +61,9 @@ func dirSize(path string, recursive, all bool) (int64, error) {
 			continue
 		}
 
-		subSize, err := pathSize(filepath.Join(path, name), recursive, all)
-		if err != nil {
-			return 0, err
+		subSize, errSub := pathSize(filepath.Join(path, name), recursive, all)
+		if errSub != nil {
+			return 0, errSub
 		}
 		size += subSize
 	}
