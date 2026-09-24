@@ -1,3 +1,5 @@
+.PHONY: build test lint lint-fix
+
 GOPATH := $(shell go env GOPATH)
 
 build:
