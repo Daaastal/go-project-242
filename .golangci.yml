@@ -1,17 +1,10 @@
 version: "2"
 
-issues:
-  max-same-issues: 50
-
 formatters:
   enable:
     - goimports
     - gofumpt
     - golines
-
-  settings:
-    golines:
-      max-len: 120
 
 linters:
   enable:
@@ -39,17 +32,6 @@ linters:
         - -ST1000
         - -ST1016
         - -QF1008
-
-    revive:
-      rules:
-        - name: exported
-        - name: package-comments
-        - name: indent-error-flow
-        - name: errorf
-        - name: var-naming
-
-    nlreturn:
-      block-size: 2
 
   exclusions:
     warn-unused: true

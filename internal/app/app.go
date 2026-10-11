@@ -1,3 +1,4 @@
+// Package app - API запуска и настройки команды
 package app
 
 import (
@@ -60,13 +61,14 @@ func runMyDuCommand(_ context.Context, cmd *cli.Command) error {
 	}
 
 	res := format.GetStringResult(size, path)
-	if _, errPrint := fmt.Fprint(os.Stdout, "%s", res); errPrint != nil {
+	if _, errPrint := fmt.Fprint(os.Stdout, res); errPrint != nil {
 		return errPrint
 	}
 
 	return nil
 }
 
+// Run - настроить и запустить команду
 func Run(ctx context.Context, osArgs []string) (deferErr error) {
 	cmd := createCmd()
 	err := cmd.Run(ctx, osArgs)

@@ -1,3 +1,4 @@
+// Package size - API для получения размера
 package size
 
 import (
@@ -7,6 +8,7 @@ import (
 	"strings"
 )
 
+// CalcPathSize - получить размер с учетом флагов
 func CalcPathSize(path string, recursive, all bool) (int64, error) {
 	info, err := os.Lstat(path)
 	if err != nil {

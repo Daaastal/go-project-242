@@ -1,3 +1,4 @@
+// Package code - API подсчета и форматирования размера по указонному пути
 package code
 
 import (
@@ -5,11 +6,12 @@ import (
 	"code/internal/size"
 )
 
+// GetPathSize - получить размер по указанному пути
 func GetPathSize(path string, recursive, human, all bool) (string, error) {
 	size, err := size.CalcPathSize(path, recursive, all)
 	if err != nil {
 		return "", err
 	}
 
-	return format.FormatSize(size, human), nil
+	return format.HumanSize(size, human), nil
 }
