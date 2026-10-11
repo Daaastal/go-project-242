@@ -7,6 +7,7 @@ import (
 	"os"
 
 	"code"
+	"code/internal/format"
 
 	"github.com/urfave/cli/v3"
 )
@@ -38,29 +39,31 @@ func createCmd() *cli.Command {
 				Usage:       "recursive size of directories",
 			},
 		},
-
-		Action: func(_ context.Context, cmd *cli.Command) error {
-			if cmd.Args().Len() != 1 {
-				return errUsage
-			}
-
-			path := cmd.Args().First()
-			human := cmd.Bool("human")
-			all := cmd.Bool("all")
-			recursive := cmd.Bool("recursive")
-
-			size, err := code.GetPathSize(path, recursive, human, all)
-			if err != nil {
-				return err
-			}
-
-			if _, errPrint := fmt.Fprintf(os.Stdout, "%s\t%s\n", size, path); errPrint != nil {
-				return errPrint
-			}
-			return nil
-		},
+		Action: runMyDuCommand,
 	}
 	return cmd
+}
+
+func runMyDuCommand(_ context.Context, cmd *cli.Command) error {
+	if cmd.Args().Len() != 1 {
+		return errUsage
+	}
+
+	path := cmd.Args().First()
+	human := cmd.Bool("human")
+	all := cmd.Bool("all")
+	recursive := cmd.Bool("recursive")
+
+	size, err := code.GetPathSize(path, recursive, human, all)
+	if err != nil {
+		return err
+	}
+
+	res := format.GetStringResult(size, path)
+	if _, errPrint := fmt.Fprintf(os.Stdout, res); errPrint != nil {
+		return errPrint
+	}
+	return nil
 }
 
 func Run(ctx context.Context, osArgs []string) (deferErr error) {
@@ -68,3 +71,4 @@ func Run(ctx context.Context, osArgs []string) (deferErr error) {
 	err := cmd.Run(ctx, osArgs)
 	return err
 }
+
