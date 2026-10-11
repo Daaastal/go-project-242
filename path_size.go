@@ -1,8 +1,8 @@
 package code
 
 import (
-	"code/internal/size"
 	"code/internal/format"
+	"code/internal/size"
 )
 
 func GetPathSize(path string, recursive, human, all bool) (string, error) {
@@ -13,4 +13,3 @@ func GetPathSize(path string, recursive, human, all bool) (string, error) {
 
 	return format.FormatSize(size, human), nil
 }
-

@@ -1,11 +1,10 @@
 package main
 
 import (
-	"context"
-	"os"
-	"fmt"
-
 	"code/internal/app"
+	"context"
+	"fmt"
+	"os"
 )
 
 func main() {

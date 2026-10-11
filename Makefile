@@ -1,5 +1,6 @@
-.PHONY: build test lint lint-fix
+.PHONY: build test lint lint-fix format format-check
 
+GOLANGCI_LINT ?= golangci-lint
 GOPATH := $(shell go env GOPATH)
 
 build:
@@ -9,8 +10,13 @@ test:
 	go test ./...
 
 lint:
-	$(GOPATH)/bin/golangci-lint run ./...
+	$(GOLANGCI_LINT) run ./...
 
 lint-fix:
-	$(GOPATH)/bin/golangci-lint run --fix ./...
+	$(GOLANGCI_LINT) run --fix ./...
 
+format:
+	$(GOLANGCI_LINT) fmt ./...
+
+format-check:
+	$(GOLANGCI_LINT) fmt --diff ./...

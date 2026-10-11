@@ -1,13 +1,12 @@
 package app
 
 import (
+	"code"
+	"code/internal/format"
 	"context"
 	"errors"
 	"fmt"
 	"os"
-
-	"code"
-	"code/internal/format"
 
 	"github.com/urfave/cli/v3"
 )
@@ -67,8 +66,7 @@ func runMyDuCommand(_ context.Context, cmd *cli.Command) error {
 }
 
 func Run(ctx context.Context, osArgs []string) (deferErr error) {
-	cmd := createCmd();
+	cmd := createCmd()
 	err := cmd.Run(ctx, osArgs)
 	return err
 }
-
