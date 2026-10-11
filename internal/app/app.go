@@ -40,6 +40,7 @@ func createCmd() *cli.Command {
 		},
 		Action: runMyDuCommand,
 	}
+
 	return cmd
 }
 
@@ -59,14 +60,16 @@ func runMyDuCommand(_ context.Context, cmd *cli.Command) error {
 	}
 
 	res := format.GetStringResult(size, path)
-	if _, errPrint := fmt.Fprintf(os.Stdout, res); errPrint != nil {
+	if _, errPrint := fmt.Fprint(os.Stdout, "%s", res); errPrint != nil {
 		return errPrint
 	}
+
 	return nil
 }
 
 func Run(ctx context.Context, osArgs []string) (deferErr error) {
 	cmd := createCmd()
 	err := cmd.Run(ctx, osArgs)
+
 	return err
 }

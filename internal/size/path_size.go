@@ -50,5 +50,6 @@ func calcDirSize(path string, recursive, all bool) (int64, error) {
 		}
 		size += subSize
 	}
+
 	return size, nil
 }

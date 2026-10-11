@@ -96,7 +96,7 @@ func TestGetPathSizeErrors(t *testing.T) {
 			got, err := GetPathSize(test.path, false, false, false)
 
 			require.Error(t, err)
-			assert.Equal(t, "", got)
+			assert.Empty(t, got)
 		})
 	}
 }
