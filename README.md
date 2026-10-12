@@ -36,21 +36,21 @@ GLOBAL OPTIONS:
 
 ```console
 $ ./bin/hexlet-path-size hello_file.txt
-7B      hello_file.txt
+7B      testdata/hello_file.txt
 ```
 
 Размер каталога без рекурсии:
 
 ```console
 $ ./bin/hexlet-path-size dir
-20B     dir
+20B     testdata/dir
 ```
 
 С рекурсией, обход вложенных каталогов:
 
 ```console
 $ ./bin/hexlet-path-size -r dir
-503B    dir
+503B    testdata/dir
 ```
 
 С флагом `-a` - учитывает скрытые файлы и каталоги внутри:
@@ -63,14 +63,14 @@ $ ./bin/hexlet-path-size -r -a .
 
 ```console
 $ ./bin/hexlet-path-size -H big_file.txt
-87.9KB  big_file.txt
+87.9KB  testdata/big_file.txt
 ```
 
 Скрытый файл, переданный как корневой путь, измеряется всегда:
 
 ```console
 $ ./bin/hexlet-path-size .hidden
-6B      .hidden
+6B      testdata/.hidden
 ```
 
 ## Поведение ошибок
