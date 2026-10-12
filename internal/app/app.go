@@ -12,7 +12,7 @@ import (
 	"github.com/urfave/cli/v3"
 )
 
-var errUsage = errors.New("usage: hexlet-path-size [flags] <path>")
+var ErrUsage = errors.New("usage: hexlet-path-size [flags] <path>")
 
 func createCmd() *cli.Command {
 	cmd := &cli.Command{
@@ -39,15 +39,15 @@ func createCmd() *cli.Command {
 				Usage:       "recursive size of directories",
 			},
 		},
-		Action: runMyDuCommand,
+		Action: run,
 	}
 
 	return cmd
 }
 
-func runMyDuCommand(_ context.Context, cmd *cli.Command) error {
+func run(_ context.Context, cmd *cli.Command) error {
 	if cmd.Args().Len() != 1 {
-		return errUsage
+		return ErrUsage
 	}
 
 	path := cmd.Args().First()
@@ -70,8 +70,5 @@ func runMyDuCommand(_ context.Context, cmd *cli.Command) error {
 
 // Run - настроить и запустить команду
 func Run(ctx context.Context, osArgs []string) (deferErr error) {
-	cmd := createCmd()
-	err := cmd.Run(ctx, osArgs)
-
-	return err
+	return createCmd().Run(ctx, osArgs)
 }
