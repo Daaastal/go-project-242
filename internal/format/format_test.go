@@ -20,30 +20,29 @@ func TestHumanSize(t *testing.T) {
 		human    bool
 	}{
 		{
-			name: "BigSizeWithNoHuman",
+			name:     "BigSizeWithNoHuman",
 			expected: "89982B",
-			size: 89982,
-			human: false,
+			size:     89982,
+			human:    false,
 		},
 		{
-			name: "BigSizeWithHuman",
+			name:     "BigSizeWithHuman",
 			expected: "87.9KB",
-			size: 89982,
-			human: true,
+			size:     89982,
+			human:    true,
 		},
 		{
-			name: "SmallSizeWithNoHuman",
+			name:     "SmallSizeWithNoHuman",
 			expected: "10B",
-			size: 10,
-			human: false,
+			size:     10,
+			human:    false,
 		},
 		{
-			name: "SmallSizeWithHuman",
+			name:     "SmallSizeWithHuman",
 			expected: "10B",
-			size: 10,
-			human: true,
+			size:     10,
+			human:    true,
 		},
-
 	}
 
 	for _, test := range tests {
