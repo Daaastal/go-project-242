@@ -12,6 +12,7 @@ import (
 	"github.com/urfave/cli/v3"
 )
 
+// ErrUsage - ошибка использования команды
 var ErrUsage = errors.New("usage: hexlet-path-size [flags] <path>")
 
 func createCmd() *cli.Command {
