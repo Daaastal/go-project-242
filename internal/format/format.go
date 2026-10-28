@@ -3,6 +3,7 @@ package format
 
 import (
 	"fmt"
+	"math"
 )
 
 // GetStringResult - получить форматированный результат
@@ -14,20 +15,25 @@ func GetStringResult(size, path string) string {
 func HumanSize(size int64, human bool) string {
 	units := []string{"B", "KB", "MB", "GB", "TB", "PB", "EB"}
 	value := float64(size)
-	i := 0
 
 	if !human {
 		return fmt.Sprintf("%dB", size)
 	}
 
-	for value >= 1024 && i < len(units)-1 {
+	var selectedUnit string
+	for _, unit := range units {
+		rounded := math.Round(value*10) / 10
+		if rounded < 1024 || unit == units[len(units)-1] {
+			selectedUnit = unit
+
+			break
+		}
 		value /= 1024
-		i++
 	}
 
-	if i == 0 {
+	if selectedUnit == "B" {
 		return fmt.Sprintf("%dB", size)
 	}
 
-	return fmt.Sprintf("%.1f%s", value, units[i])
+	return fmt.Sprintf("%.1f%s", value, selectedUnit)
 }

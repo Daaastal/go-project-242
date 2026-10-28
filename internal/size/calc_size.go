@@ -2,17 +2,21 @@
 package size
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
 )
 
+// ErrUnsupportedFileType - тип файла не поддерживается для измерения
+var ErrUnsupportedFileType = errors.New("unsupported file type")
+
 // CalcPathSize - получить размер с учетом флагов
 func CalcPathSize(path string, recursive, all bool) (int64, error) {
 	info, err := os.Lstat(path)
 	if err != nil {
-		return 0, fmt.Errorf("lstat %q: %w", path, err)
+		return 0, err
 	}
 
 	mode := info.Mode()
@@ -21,11 +25,11 @@ func CalcPathSize(path string, recursive, all bool) (int64, error) {
 		return calcDirSize(path, recursive, all)
 	}
 
-	if mode.IsRegular() || (mode&os.ModeType == os.ModeSymlink) {
+	if mode.IsRegular() || (mode&os.ModeType != 0) {
 		return info.Size(), nil
 	}
 
-	return 0, nil
+	return 0, fmt.Errorf("%w: %s", ErrUnsupportedFileType, path)
 }
 
 func calcDirSize(path string, recursive, all bool) (int64, error) {
