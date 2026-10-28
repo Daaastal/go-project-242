@@ -25,7 +25,7 @@ func CalcPathSize(path string, recursive, all bool) (int64, error) {
 		return calcDirSize(path, recursive, all)
 	}
 
-	if mode.IsRegular() || (mode&os.ModeType != 0) {
+	if mode.IsRegular() || (mode&os.ModeSymlink != 0) {
 		return info.Size(), nil
 	}
 
