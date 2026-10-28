@@ -2,11 +2,12 @@
 package main
 
 import (
-	"code/internal/app"
 	"context"
 	"errors"
 	"fmt"
 	"os"
+
+	"github.com/Daaastal/go-project-242/internal/app"
 )
 
 func main() {

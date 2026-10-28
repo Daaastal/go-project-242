@@ -12,7 +12,7 @@ func TestGetStringResult(t *testing.T) {
 	assert.Equal(t, expected, actual)
 }
 
-func TestHumanSize(t *testing.T) {
+func TestSize(t *testing.T) {
 	tests := []struct {
 		name     string
 		expected string
@@ -47,7 +47,7 @@ func TestHumanSize(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			got := HumanSize(test.size, test.human)
+			got := Size(test.size, test.human)
 			assert.Equal(t, test.expected, got)
 		})
 	}

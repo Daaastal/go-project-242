@@ -2,12 +2,12 @@
 package app
 
 import (
-	"code"
-	"code/internal/format"
 	"context"
 	"errors"
 	"fmt"
-	"os"
+
+	code "github.com/Daaastal/go-project-242"
+	"github.com/Daaastal/go-project-242/internal/format"
 
 	"github.com/urfave/cli/v3"
 )
@@ -62,7 +62,7 @@ func run(_ context.Context, cmd *cli.Command) error {
 	}
 
 	res := format.GetStringResult(size, path)
-	if _, errPrint := fmt.Fprint(os.Stdout, res); errPrint != nil {
+	if _, errPrint := fmt.Fprint(cmd.Writer, res); errPrint != nil {
 		return errPrint
 	}
 

@@ -11,8 +11,8 @@ func GetStringResult(size, path string) string {
 	return fmt.Sprintf("%s\t%s\n", size, path)
 }
 
-// HumanSize - отформатировать размер с учетом флага human
-func HumanSize(size int64, human bool) string {
+// Size - отформатировать размер с учетом флага human
+func Size(size int64, human bool) string {
 	units := []string{"B", "KB", "MB", "GB", "TB", "PB", "EB"}
 	value := float64(size)
 
