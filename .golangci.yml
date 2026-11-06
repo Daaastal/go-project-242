@@ -6,9 +6,10 @@ formatters:
     - gofumpt
     - golines
   settings:
+    gofumpt:
+      module-path: "code"
     goimports:
-      local-prefixes:
-        - "code"
+      local-prefixes: "code"
 
 linters:
   enable:
