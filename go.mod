@@ -1,4 +1,4 @@
-module github.com/Daaastal/go-project-242
+module code
 
 go 1.26.0
 
