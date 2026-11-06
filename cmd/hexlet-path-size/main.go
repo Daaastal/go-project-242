@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/Daaastal/go-project-242/internal/app"
+	"code/internal/app"
 )
 
 func main() {

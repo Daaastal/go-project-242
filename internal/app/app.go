@@ -6,8 +6,8 @@ import (
 	"errors"
 	"fmt"
 
-	code "github.com/Daaastal/go-project-242"
-	"github.com/Daaastal/go-project-242/internal/format"
+	"code"
+	"code/internal/format"
 
 	"github.com/urfave/cli/v3"
 )

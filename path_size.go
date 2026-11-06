@@ -2,8 +2,8 @@
 package code
 
 import (
-	"github.com/Daaastal/go-project-242/internal/format"
-	"github.com/Daaastal/go-project-242/internal/size"
+	"code/internal/format"
+	"code/internal/size"
 )
 
 // GetPathSize - получить размер по указанному пути
